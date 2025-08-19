@@ -1,158 +1,242 @@
 # POAP Sherry - Twitter Mini App
 
-Mini aplicación de Twitter para distribuir POAPs usando Sherry Social SDK. Esta app permite a los usuarios reclamar POAPs directamente desde Twitter completando ciertos requisitos como seguir una cuenta y retuitear.
+Twitter mini-app for distributing POAPs using Sherry Social SDK. This app allows users to claim POAPs directly from Twitter by completing certain requirements like following an account and retweeting.
 
-## 🚀 Instalación
+## 🚀 Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/poap-sherry.git
+git clone https://github.com/gotoalberto/poap-sherry.git
 cd poap-sherry
 ```
 
-2. Instala las dependencias:
+2. Install dependencies:
 ```bash
 npm install --legacy-peer-deps
 ```
 
-3. Copia el archivo de configuración:
+3. Copy the configuration file:
 ```bash
 cp .env.example .env
 ```
 
-4. Configura las variables de entorno en `.env`:
+4. Configure environment variables in `.env`:
 ```env
 # POAP API Configuration
-POAP_CLIENT_ID=tu_poap_client_id
-POAP_CLIENT_SECRET=tu_poap_client_secret
-POAP_API_KEY=tu_poap_api_key
+POAP_CLIENT_ID=your_poap_client_id
+POAP_CLIENT_SECRET=your_poap_client_secret
+POAP_API_KEY=your_poap_api_key
 POAP_EVENT_ID=191758
 POAP_SECRET_CODE=902096
 
 # Twitter API Configuration
-TWITTER_BEARER_TOKEN=tu_twitter_bearer_token
+TWITTER_BEARER_TOKEN=your_twitter_bearer_token
 
 # Follow Gate Configuration
 NEXT_PUBLIC_REQUIRED_FOLLOW_USERNAME=gotoalberto
 ```
 
-5. Ejecuta el servidor de desarrollo:
+5. Run the development server:
 ```bash
 npm run dev
 ```
 
-La aplicación estará disponible en `http://localhost:3000`
+The application will be available at `http://localhost:3000`
 
-## 🐦 Cómo insertar la miniapp en un post de Twitter
+## 🐦 How to embed the mini-app in a Twitter post
 
-### Método 1: Usando Sherry Links (Recomendado)
+### Method 1: Using Sherry Links API (Recommended)
 
-1. **Instala la extensión Sherry Links**:
-   - Ve a [Chrome Web Store](https://chromewebstore.google.com/detail/sherry-links/cpmcpmfnblpkjlipgkhfjocoohjnmfhd)
-   - Instala la extensión "Sherry Links"
+1. **Install the Sherry Links extension**:
+   - Go to [Chrome Web Store](https://chromewebstore.google.com/detail/sherry-links/cpmcpmfnblpkjlipgkhfjocoohjnmfhd)
+   - Install the "Sherry Links" extension
 
-2. **Despliega tu app**:
-   - Despliega tu app en Vercel, Netlify o cualquier servicio de hosting
-   - Obtén la URL pública (ej: `https://tu-poap-app.vercel.app`)
+2. **Deploy your app**:
+   - Deploy your app on Vercel, Netlify, or any hosting service
+   - Get the public URL (e.g., `https://your-poap-app.vercel.app`)
 
-3. **Crea el enlace de Sherry**:
-   - Ve a https://sherry.social/links
-   - Pega la URL de tu app
-   - Sherry generará un enlace especial que se convertirá en una miniapp
-
-4. **Comparte en Twitter**:
-   - Crea un nuevo tweet
-   - Incluye el enlace de Sherry en tu tweet
-   - Los usuarios con la extensión Sherry verán tu miniapp embebida directamente en el tweet
-
-### Método 2: URL Directa con Metadata
-
-1. **Configura los metadatos de tu app**:
-   - La app ya incluye los metadatos necesarios en `/api/metadata`
-   - Asegúrate de que tu app esté accesible públicamente
-
-2. **Comparte el enlace**:
-   ```
-   🎉 Reclama tu POAP exclusivo!
+3. **Generate the Sherry link programmatically**:
    
-   Sigue estos pasos:
-   1. Instala Sherry Links
-   2. Sigue a @gotoalberto
-   3. Retuitea este post
-   4. Reclama tu POAP aquí: https://tu-app.vercel.app
+   **Option A: Use the API endpoint**
+   ```bash
+   curl https://your-poap-app.vercel.app/api/sherry-link
+   ```
+   
+   Response:
+   ```json
+   {
+     "success": true,
+     "sherryLink": "https://sherry.social/link?app=...",
+     "directLink": "https://your-poap-app.vercel.app",
+     "metadata": {...},
+     "instructions": {
+       "withExtension": "Users with Sherry Links extension will see the mini-app embedded in the tweet",
+       "withoutExtension": "Users without the extension will be redirected to the app"
+     }
+   }
+   ```
+   
+   **Option B: Generate custom links**
+   ```bash
+   curl -X POST https://your-poap-app.vercel.app/api/sherry-link \
+     -H "Content-Type: application/json" \
+     -d '{
+       "eventId": 191758,
+       "eventName": "My Custom POAP",
+       "imageUrl": "https://example.com/poap-image.png"
+     }'
+   ```
+
+4. **Share on Twitter**:
+   - Create a new tweet
+   - Include the generated Sherry link
+   - Users with the Sherry extension will see your mini-app embedded directly in the tweet
+
+### Method 2: Direct URL with Metadata
+
+1. **Configure your app metadata**:
+   - The app already includes the necessary metadata at `/api/metadata`
+   - Make sure your app is publicly accessible
+
+2. **Share the link**:
+   ```
+   🎉 Claim your exclusive POAP!
+   
+   Follow these steps:
+   1. Install Sherry Links
+   2. Follow @gotoalberto
+   3. Retweet this post
+   4. Claim your POAP here: https://your-app.vercel.app
    
    #POAP #Web3
    ```
 
-### Método 3: Integración con Twitter Cards (Futuro)
+### Method 3: Twitter Cards Integration (Future)
 
-Cuando Twitter habilite oficialmente las mini-apps:
+When Twitter officially enables mini-apps:
 
-1. **Configura Twitter Card metadata**:
+1. **Configure Twitter Card metadata**:
    ```html
    <meta name="twitter:card" content="app">
-   <meta name="twitter:app:url" content="https://tu-app.vercel.app">
+   <meta name="twitter:app:url" content="https://your-app.vercel.app">
    ```
 
-2. **Registra tu app en Twitter Developer Portal**
+2. **Register your app in Twitter Developer Portal**
 
-## 📱 Experiencia del Usuario
+## 📱 User Experience
 
-1. **Usuario ve el tweet** con el enlace a la miniapp
-2. **Con Sherry instalado**, la miniapp se carga directamente en el tweet
-3. **Completa los requisitos**:
-   - Sigue la cuenta requerida
-   - Retuitea el post
-4. **Conecta su wallet** o ingresa dirección
-5. **Reclama el POAP**
+1. **User sees the tweet** with the mini-app link
+2. **With Sherry installed**, the mini-app loads directly in the tweet
+3. **Complete requirements**:
+   - Follow the required account
+   - Retweet the post
+4. **Connect wallet** or enter address
+5. **Claim the POAP**
 
-## 🔧 Personalización
+## 🔧 Customization
 
-### Cambiar el POAP Event
-Modifica en `.env`:
+### Change POAP Event
+Modify in `.env`:
 ```env
-POAP_EVENT_ID=tu_event_id
-POAP_SECRET_CODE=tu_secret_code
+POAP_EVENT_ID=your_event_id
+POAP_SECRET_CODE=your_secret_code
 ```
 
-### Cambiar requisitos
-Modifica en `.env`:
+### Change requirements
+Modify in `.env`:
 ```env
-NEXT_PUBLIC_REQUIRED_FOLLOW_USERNAME=tu_username
+NEXT_PUBLIC_REQUIRED_FOLLOW_USERNAME=your_username
 ```
 
-### Personalizar diseño
-Los estilos están en los componentes usando CSS-in-JS. Modifica:
+### Customize design
+Styles are in the components using CSS-in-JS. Modify:
 - `/src/components/POAPMinter.tsx`
 - `/src/components/FollowGate.tsx`
 - `/src/components/POAPSuccess.tsx`
 
-## 🚀 Despliegue en Producción
+## 🚀 Production Deployment
 
-### Vercel (Recomendado)
+### Vercel (Recommended)
 ```bash
 npm install -g vercel
 vercel
 ```
 
-### Variables de entorno en producción
-Configura las mismas variables del `.env` en tu servicio de hosting.
+### Production environment variables
+Configure the same `.env` variables in your hosting service.
 
-## 📝 Notas Importantes
+## 🔗 API Endpoints
 
-- Los usuarios necesitan tener instalada la extensión Sherry Links para ver la miniapp embebida
-- Sin la extensión, verán un enlace normal que los llevará a la app
-- La app funciona tanto embebida como standalone
-- Los POAPs se mintean en la blockchain de Gnosis (xDai)
+### Generate Sherry Link
+**GET** `/api/sherry-link`
 
-## 🤝 Contribuir
+Generates a Sherry link for the configured POAP event.
 
-1. Fork el proyecto
-2. Crea tu feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la branch (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+**Response:**
+```json
+{
+  "success": true,
+  "sherryLink": "https://sherry.social/link?app=...",
+  "directLink": "https://your-app.vercel.app",
+  "metadata": {
+    "type": "action",
+    "url": "https://your-app.vercel.app",
+    "icon": "https://...",
+    "title": "Mint POAP",
+    "description": "Claim your commemorative POAP badge on Twitter",
+    "actions": [...]
+  }
+}
+```
 
-## 📄 Licencia
+### Generate Custom Sherry Link
+**POST** `/api/sherry-link`
 
-Este proyecto está bajo la licencia MIT.
+Generates a Sherry link with custom parameters.
+
+**Request Body:**
+```json
+{
+  "eventId": 191758,
+  "eventName": "My Custom POAP",
+  "imageUrl": "https://example.com/poap-image.png"
+}
+```
+
+### Get POAP Event Data
+**GET** `/api/poap-event`
+
+Returns information about the configured POAP event.
+
+### Check Claim Status
+**POST** `/api/poap-claim`
+
+Checks if a user has already claimed the POAP.
+
+**Request Body:**
+```json
+{
+  "userId": "twitter_user_id"
+}
+```
+
+## 📝 Important Notes
+
+- Users need to have the Sherry Links extension installed to see the embedded mini-app
+- Without the extension, they'll see a normal link that takes them to the app
+- The app works both embedded and standalone
+- POAPs are minted on the Gnosis (xDai) blockchain
+- The Sherry link API endpoint automatically generates the correct metadata for your POAP event
+- You can generate custom links for different POAP events using the POST endpoint
+
+## 🤝 Contributing
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is under the MIT license.
